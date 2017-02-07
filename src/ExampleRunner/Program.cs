@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ExampleRunner.Generation;
+using ExampleRunner.Testing;
 using Serilog;
 using Serilog.Events;
 
@@ -47,54 +46,40 @@ namespace ExampleRunner
 
         static void GenerateDocumentation()
         {
-            var files = Directory.GetFiles(Environment.CurrentDirectory, "*", SearchOption.AllDirectories)
-                .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            var examples = 
-                from file in files
-                let fileName = Path.GetFileName(file)
-                where FileNameFilterRegex.IsMatch(fileName)
-                let contents = File.ReadAllText(file)
-                select ExampleParser.Parse(contents);
-
+            Log.Information("Generating docs");
             using (var streamWriter = new StreamWriter(OutputFile))
             using (var exampleWriter = new ExampleWriter(streamWriter))
             {
-                foreach (var example in examples) exampleWriter.Write(example);
+                foreach (var file in GetScriptFiles())
+                {
+                    Log.Information("Parsing {file}", file);
+                    var example = ExampleParser.Parse(File.ReadAllText(file));
+                    exampleWriter.Write(example);
+                }
             }
+            Log.Information("Docs written to: {output}", OutputFile);
         }
 
         static void RunAllExamples()
         {
+            Log.Information("Running tests...");
 
-        }
-    }
-
-    internal class ExampleWriter : IDisposable
-    {
-        readonly TextWriter writer;
-
-        public ExampleWriter(TextWriter writer)
-        {
-            this.writer = writer;
+            foreach (var file in GetScriptFiles())
+            {
+                Log.Information("Running test: {file}", file);
+                ScriptRunner.RunScript(file);
+            }
+            Log.Information("Test run complete");
         }
 
-        public void Write(Example example)
+        static IEnumerable<string> GetScriptFiles()
         {
-            writer.Write("#### ");
-            writer.WriteLine(example.Title);
-            writer.WriteLine();
-            writer.WriteLine(example.Description);
-            writer.WriteLine();
-            writer.WriteLine("```powershell");
-            writer.WriteLine(example.Code);
-            writer.WriteLine("```");
-        }
-
-        public void Dispose()
-        {
-            writer.Dispose();
+            return (
+                from file in Directory.GetFiles(Environment.CurrentDirectory, "*", SearchOption.AllDirectories)
+                let relative = file.Substring(Environment.CurrentDirectory.Length + 1)
+                let fileName = Path.GetFileName(file)
+                where FileNameFilterRegex.IsMatch(fileName)
+                select relative).OrderBy(f => f, StringComparer.OrdinalIgnoreCase).ToList();
         }
     }
 }

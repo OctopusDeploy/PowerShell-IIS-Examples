@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
+using Serilog;
 
 namespace ExampleRunner.Generation
 {
