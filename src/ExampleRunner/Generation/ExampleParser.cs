@@ -16,31 +16,12 @@ namespace ExampleRunner.Generation
 
             var example = new Example
             {
-                Title = NoNewlines(ParseMultilineComment(match.Groups["title"].Value)),
-                Description = ParseMultilineComment(match.Groups["description"].Value),
                 Code = match.Groups["example"].Value.Trim()
             };
             return example;
         }
 
-        static string NoNewlines(string potentiallyMultipleLines)
-        {
-            return string.Join(" ", potentiallyMultipleLines.Split('\n').Select(s => s.Trim()));
-        }
-
-        static string ParseMultilineComment(string desc)
-        {
-            var lines = desc.Split('\n');
-            return string.Join("\r\n", lines.Select(l => l.Trim().TrimStart('#').Trim())).Trim();
-        }
-
         static readonly Regex ParserRegex = new Regex(@"# Meta:
-\#\s-----+\r\n
-\#\s*Title:\s*(?<title>.*?\r\n)
-\#\s*Description:\s*
-  (?<description>.*?)
-(?=\#\s-----+)
-
 # Whatever in the middle
 .*?
 

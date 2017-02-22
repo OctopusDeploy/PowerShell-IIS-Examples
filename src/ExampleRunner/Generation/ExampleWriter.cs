@@ -12,16 +12,17 @@ namespace ExampleRunner.Generation
             this.writer = writer;
         }
 
-        public void Write(Example example)
+        public void WriteIntroduction(string contents)
         {
-            writer.Write("#### ");
-            writer.WriteLine(example.Title);
-            writer.WriteLine();
-            writer.WriteLine(example.Description);
-            writer.WriteLine();
-            writer.WriteLine("```powershell");
+            writer.WriteLine(contents);
+        }
+
+        public void WriteExample(string name, Example example)
+        {
+            writer.WriteLine("```powershell " + name);
             writer.WriteLine(example.Code);
             writer.WriteLine("```");
+            writer.WriteLine();
         }
 
         public void Dispose()

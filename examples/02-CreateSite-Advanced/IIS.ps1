@@ -1,32 +1,40 @@
 # -----------------------------------------------------------------------------
-# Title: Creating a new website
-# Description: 
-#   This is a description of what this sample demonstrates. It can wrap over 
-#   multiple lines, and can use Markdown syntax like asterisks for **bold**. 
-#
-#   This is the second paragraph.
-# -----------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------
 # Setup
 # -----------------------------------------------------------------------------
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+cd $here
 
-. .\_Setup.ps1
+. ..\_Setup.IIS.ps1
+
+mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
 
 # -----------------------------------------------------------------------------
 # Example
 # -----------------------------------------------------------------------------
 
-Write-Host "Hello, world"
+Import-Module IISAdministration
+
+Start-IISCommitDelay
+
+New-IISSite -Name "Website1" -BindingInformation "*:8022:" -PhysicalPath "C:\Sites\Website1"
+
+$site = Get-IISSite -Name "Website1"
+$site.Id = 4
+$site.Bindings.Add("*:8023:", "http")
+$site.Applications["/"].ApplicationPoolName = ".NET v4.5";
+
+Stop-IISCommitDelay -Commit $true
 
 # -----------------------------------------------------------------------------
 # Assert
 # -----------------------------------------------------------------------------
 
-# assert here
+if ((Get-IISSite -Name "Website1") -eq $null) { Write-Error "Website1 not found" }
 
 # -----------------------------------------------------------------------------
 # Clean up
 # -----------------------------------------------------------------------------
 
-. .\_Teardown.ps1
+. ..\_Teardown.IIS.ps1
+
+Remove-IISSite -Name "Website1" -Confirm:$false
