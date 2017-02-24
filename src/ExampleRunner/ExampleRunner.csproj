@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.TeamCity.ServiceMessages, Version=3.0.5.1, Culture=neutral, PublicKeyToken=620ded7f0cf61090, processorArchitecture=MSIL">
