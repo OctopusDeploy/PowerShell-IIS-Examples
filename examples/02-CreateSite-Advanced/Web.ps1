@@ -4,7 +4,7 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 cd $here
 
-. ..\_Setup.IIS.ps1
+. ..\_Setup.Web.ps1
 
 mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
 
@@ -12,30 +12,26 @@ mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
 # Example
 # -----------------------------------------------------------------------------
 
-Import-Module IISAdministration
+Import-Module WebAdministration
 
-Start-IISCommitDelay
+New-Item -Path "IIS:\Sites" -Name "Website1" -Type Site -Bindings @{protocol="http";bindingInformation="*:8021:"}
+Set-ItemProperty -Path "IIS:\Sites\Website1" -name "physicalPath" -value "C:\Sites\Website1"
+Set-ItemProperty -Path "IIS:\Sites\Website1" -Name "id" -Value 4
+Set-ItemProperty -Path "IIS:\Sites\Website1" -Name "applicationPool" -Value ".NET v4.5"
+New-ItemProperty -Path "IIS:\Sites\Website1" -Name "bindings" -Value (@{protocol="http";bindingInformation="*:8022:"}, @{protocol="http";bindingInformation="*:8023:"})
 
-New-IISSite -Name "Website1" -BindingInformation "*:8022:" -PhysicalPath "C:\Sites\Website1"
-
-$site = Get-IISSite -Name "Website1"
-$site.Id = 4
-$site.Bindings.Add("*:8023:", "http")
-$site.Bindings.Add("*:8024:", "http")
-$site.Applications["/"].ApplicationPoolName = ".NET v4.5";
-
-Stop-IISCommitDelay -Commit $true
+Start-Website -Name "Website1"
 
 # -----------------------------------------------------------------------------
 # Assert
 # -----------------------------------------------------------------------------
 
-if ((Get-IISSite -Name "Website1") -eq $null) { Write-Error "Website1 not found" }
+if ((Get-WebSite -Name "Website1") -eq $null) { Write-Error "Website1 not found" }
 
 # -----------------------------------------------------------------------------
 # Clean up
 # -----------------------------------------------------------------------------
 
-. ..\_Teardown.IIS.ps1
+. ..\_Teardown.Web.ps1
 
-Remove-IISSite -Name "Website1" -Confirm:$false
+Remove-Item -Path "IIS:\Sites\Website1" -Recurse -Force
