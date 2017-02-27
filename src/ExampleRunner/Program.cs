@@ -70,11 +70,14 @@ namespace ExampleRunner
             foreach (var example in GetExampleFiles())
             {
                 if (example.WebExampleScriptFile != null) RunTest(example.WebExampleScriptFile);
-                if (example.IisExampleScriptFile != null) RunTest(example.IisExampleScriptFile);
+                if (example.IisExampleScriptFile != null && IsIisModuleSupported) RunTest(example.IisExampleScriptFile);
             }
 
             Log.Information("Test run complete");
         }
+
+        public static bool IsIisModuleSupported => Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),
+            @"C:\Windows\System32\WindowsPowerShell\v1.0\Modules\IISAdministration"));
 
         static void RunTest(string file)
         {
