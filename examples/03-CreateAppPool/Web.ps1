@@ -21,7 +21,7 @@ if ($pool -eq $null) {
     New-Item -Path "IIS:\AppPools" -Name "My Pool 3" -Type AppPool
 
     Write-Host "Managed pipeline mode:"
-    Get-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value "Integrated"
+    Get-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode"
 
     # Older applications may require "Classic" mode, but most modern ASP.NET
     # apps use the integrated pipeline
