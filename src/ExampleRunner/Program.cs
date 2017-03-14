@@ -20,7 +20,6 @@ namespace ExampleRunner
         static int Main(string[] args)
         {
             Initialize();
-            Pristine(args);
             EnsureExamplesDirectory();            
             GenerateDocumentation();
             RunAllExamples();
@@ -43,21 +42,6 @@ namespace ExampleRunner
                 .WriteTo.Sink<TeamCitySink>()
                 .Enrich.FromLogContext()
                 .CreateLogger();
-        }
-
-        static void Pristine(string[] args)
-        {
-            if (args.All(a => a.TrimStart('/', '-').ToLowerInvariant() != "pristine"))
-                return;
-
-            using (var manager = new ServerManager())
-            {
-                var sites = manager.Sites.ToList();
-                foreach (var site in sites) manager.Sites.Remove(site);
-                var pools = manager.ApplicationPools.ToList();
-                foreach (var pool in pools) manager.ApplicationPools.Remove(pool);
-                manager.CommitChanges();
-            }
         }
 
         static void EnsureExamplesDirectory()
