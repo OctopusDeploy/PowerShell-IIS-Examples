@@ -10,8 +10,6 @@ clear
 mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
 Remove-Item -Path "IIS:\Sites\Website1" -Recurse -Force -ErrorAction SilentlyContinue 
 
-get-website
-
 # -----------------------------------------------------------------------------
 # Example
 # -----------------------------------------------------------------------------
