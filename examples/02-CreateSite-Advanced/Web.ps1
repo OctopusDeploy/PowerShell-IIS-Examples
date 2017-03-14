@@ -17,7 +17,6 @@ Import-Module WebAdministration
 New-Item -Path "IIS:\Sites" -Name "Website1" -Type Site -Bindings @{protocol="http";bindingInformation="*:8021:"}
 Set-ItemProperty -Path "IIS:\Sites\Website1" -name "physicalPath" -value "C:\Sites\Website1"
 Set-ItemProperty -Path "IIS:\Sites\Website1" -Name "id" -Value 4
-Set-ItemProperty -Path "IIS:\Sites\Website1" -Name "applicationPool" -Value ".NET v4.5"
 New-ItemProperty -Path "IIS:\Sites\Website1" -Name "bindings" -Value (@{protocol="http";bindingInformation="*:8022:"}, @{protocol="http";bindingInformation="*:8023:"})
 
 Start-Website -Name "Website1"

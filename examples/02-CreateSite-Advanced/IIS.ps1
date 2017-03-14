@@ -22,7 +22,6 @@ $site = Get-IISSite -Name "Website1"
 $site.Id = 4
 $site.Bindings.Add("*:8023:", "http")
 $site.Bindings.Add("*:8024:", "http")
-$site.Applications["/"].ApplicationPoolName = ".NET v4.5";
 
 Stop-IISCommitDelay -Commit $true
 
