@@ -16,8 +16,7 @@ New-Website -Name "Website1" -Port 80 -IPAddress "*" -HostHeader "" -PhysicalPat
 
 Import-Module WebAdministration
 
-$pool = Get-Item -Path "IIS:\AppPools\My Pool 3" -ErrorAction SilentlyContinue
-if ($pool -eq $null) {
+if ((Test-Path "IIS:\AppPools\My Pool 3") -eq $False) {
     New-Item -Path "IIS:\AppPools" -Name "My Pool 3" -Type AppPool
 
     Write-Host "Managed pipeline mode:"
@@ -38,12 +37,6 @@ if ($pool -eq $null) {
     # set this to false, you have to manually start the application pool or 
     # you will get 503 errors. 
     Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "autoStart" -value $true
-
-    # "AlwaysRunning" = application pool loads when Windows starts, stays running
-    # even when the application/site is idle. 
-    # "OnDemand" = IIS starts it when needed. If there are no requests, it may 
-    # never be started. 
-    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "startMode" -value "OnDemand"
 
     # What account does the application pool run as? 
     # "ApplicationPoolIdentity" = best
@@ -77,6 +70,21 @@ if ($pool -eq $null) {
     # If this DLL doesn't exist, you'll need to install the IIS Management 
     # Console role service.
     Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value 0
+
+    # This setting was added in IIS 8. It's different to autoStart (which means 
+    # "start the app pool when a request is made") in that it lets you keep 
+    # an app pool running at all times even when there are no requests. 
+    # Since it was added in IIS 8 you may need to check the OS version before
+    # trying to set it. 
+    # 
+    # "AlwaysRunning" = application pool loads when Windows starts, stays running
+    # even when the application/site is idle. 
+    # "OnDemand" = IIS starts it when needed. If there are no requests, it may 
+    # never be started. 
+
+    if ([Environment]::OSVersion.Version -ge (new-object 'Version' 6,2)) {
+        Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "startMode" -value "OnDemand"
+    }
 }
 
 # Assign application pool to website
