@@ -16,12 +16,22 @@ namespace ExampleRunner
         static readonly string OutputFile = Path.GetFullPath("..\\..\\..\\..\\out.md");
         static readonly Regex FileNameFilterRegex = new Regex("^[^_].*README\\.md$", RegexOptions.IgnoreCase);
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             Initialize();
             EnsureExamplesDirectory();            
             GenerateDocumentation();
             RunAllExamples();
+
+            if (TeamCitySink.Errors != 0)
+            {
+                Console.WriteLine("Failed {0} errors", TeamCitySink.Errors);
+            }
+            else
+            {
+                Console.WriteLine("Success!");
+            }
+            return TeamCitySink.Errors;
         }
 
         static void Initialize()

@@ -25,7 +25,7 @@ if ($pool -eq $null) {
 
     # Older applications may require "Classic" mode, but most modern ASP.NET
     # apps use the integrated pipeline
-    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value "Integrated"
+    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value Integrated
 
     # What version of the .NET runtime to use. Valid options are "v2.0" and 
     # "v4.0". IIS Manager often presents them as ".NET 4.5", but these still 

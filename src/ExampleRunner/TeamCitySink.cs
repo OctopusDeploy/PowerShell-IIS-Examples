@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Serilog.Core;
 using Serilog.Events;
 
@@ -6,10 +7,14 @@ namespace ExampleRunner
 {
     class TeamCitySink : ILogEventSink
     {
+        public static int Errors = 0;
+
         public void Emit(LogEvent logEvent)
         {
             if (logEvent.Level >= LogEventLevel.Warning)
             {
+                Interlocked.Increment(ref Errors);
+
                 var formatter = new JetBrains.TeamCity.ServiceMessages.Write.ServiceMessageFormatter();
                 var formatted = formatter.FormatMessage("message",
                     new
