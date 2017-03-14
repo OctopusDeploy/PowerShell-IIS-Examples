@@ -50,6 +50,7 @@ namespace ExampleRunner.Testing
         class TestScope : IDisposable
         {
             readonly TeamCityTestWriter testWriter;
+            bool failed;
 
             public TestScope(string testName)
             {
@@ -64,12 +65,16 @@ namespace ExampleRunner.Testing
 
             public void StdErr(string line)
             {
+                failed = true;
                 Interlocked.Increment(ref TeamCitySink.Errors);
                 testWriter.WriteErrOutput(line);
             }
 
             public void Exited(int exit)
             {
+                if (failed)
+                    testWriter.WriteFailed("Test encountered an error", "View logs for details");
+
                 if (exit != 0)
                     testWriter.WriteFailed("Exited with code " + exit, "");
             }
