@@ -63,14 +63,20 @@ if ($pool -eq $null) {
     #      -value "Integrated"
     # 
     # However, the combination of PowerShell and the IIS module in Windows 
-    # Server 2008 and 2008 R2 requires you to specify the value as an integer,
-    # which is defined by an enum. You have to first load the DLL and 
-    # then you can use the enum. 
-    Add-Type -Path "${env:SystemRoot}\System32\inetsrv\Microsoft.Web.Administration.dll"
-    # If this DLL doesn't exist, you'll need to install the IIS Management Console
-    # feature.
-    $pipelineMode = [Microsoft.Web.Administration.ManagedPipelineMode]::Integrated
-    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value ([int]$pipelineMode)
+    # Server 2008 and 2008 R2 requires you to specify the value as an integer.
+    #
+    #  0 = Integrated
+    #  1 = Classic
+    # 
+    # If you hate hard-coding magic numbers you can do this:
+    #  
+    #   Add-Type -Path "${env:SystemRoot}\System32\inetsrv\Microsoft.Web.Administration.dll"
+    #   $pipelineMode = [Microsoft.Web.Administration.ManagedPipelineMode]::Integrated
+    #   Set-ItemProperty -Path "..." -name "managedPipelineMode" -value ([int]$pipelineMode)
+    # 
+    # If this DLL doesn't exist, you'll need to install the IIS Management 
+    # Console role service.
+    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value 0
 }
 
 # Assign application pool to website
@@ -82,6 +88,7 @@ Set-ItemProperty -Path "IIS:\Sites\Website1" -name "applicationPool" -value "My 
 
 if ((Get-WebAppPoolState -Name "My Pool 3") -eq $null) { Write-Error "Website1 not found" }
 if ((Get-WebSite -Name "Website1") -eq $null) { Write-Error "Website1 not found" }
+if ((Get-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode") -ne "Integrated") { Write-Error "Wrong pipeline mode" }
 
 # -----------------------------------------------------------------------------
 # Clean up
