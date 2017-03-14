@@ -61,7 +61,8 @@ if ((Test-Path "IIS:\AppPools\My Pool 3") -eq $False) {
     #  0 = Integrated
     #  1 = Classic
     # 
-    # If you hate hard-coding magic numbers you can do this:
+    # If you hate hard-coding magic numbers you can do this (or use the string
+    # if 2008 support isn't an issue for you):
     #  
     #   Add-Type -Path "${env:SystemRoot}\System32\inetsrv\Microsoft.Web.Administration.dll"
     #   $pipelineMode = [Microsoft.Web.Administration.ManagedPipelineMode]::Integrated
@@ -81,7 +82,6 @@ if ((Test-Path "IIS:\AppPools\My Pool 3") -eq $False) {
     # even when the application/site is idle. 
     # "OnDemand" = IIS starts it when needed. If there are no requests, it may 
     # never be started. 
-
     if ([Environment]::OSVersion.Version -ge (new-object 'Version' 6,2)) {
         Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "startMode" -value "OnDemand"
     }

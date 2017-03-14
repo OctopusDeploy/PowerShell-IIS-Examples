@@ -23,7 +23,7 @@ namespace ExampleRunner
             EnsureExamplesDirectory();            
             GenerateDocumentation();
             RunAllExamples();
-
+            
             if (TeamCitySink.Errors != 0)
             {
                 Console.WriteLine("Failed {0} errors", TeamCitySink.Errors);
