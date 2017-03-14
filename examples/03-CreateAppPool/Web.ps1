@@ -43,7 +43,7 @@ if ((Test-Path "IIS:\AppPools\My Pool 3") -eq $False) {
     # "LocalSysten" = bad idea!
     # "NetworkService" = not so bad
     # "SpecificUser" = useful if the user needs special rights
-    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "processModel.identityType" -value "ApplicationPoolIdentity"
+    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "processModel" -value @{identitytype="ApplicationPoolIdentity"}
 
     # Older applications may require "Classic" mode, but most modern ASP.NET
     # apps use the integrated pipeline. 
