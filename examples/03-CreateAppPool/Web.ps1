@@ -23,10 +23,6 @@ if ($pool -eq $null) {
     Write-Host "Managed pipeline mode:"
     Get-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode"
 
-    # Older applications may require "Classic" mode, but most modern ASP.NET
-    # apps use the integrated pipeline
-    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value Integrated
-
     # What version of the .NET runtime to use. Valid options are "v2.0" and 
     # "v4.0". IIS Manager often presents them as ".NET 4.5", but these still 
     # use the .NET 4.0 runtime so should use "v4.0". For a "No Managed Code" 
@@ -55,6 +51,26 @@ if ($pool -eq $null) {
     # "NetworkService" = not so bad
     # "SpecificUser" = useful if the user needs special rights
     Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "processModel.identityType" -value "ApplicationPoolIdentity"
+
+    # Older applications may require "Classic" mode, but most modern ASP.NET
+    # apps use the integrated pipeline. 
+    # 
+    # On newer versions of PowerShell, setting the managedPipelineMode is easy -
+    # just use a string:
+    # 
+    #   Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" `
+    #      -name "managedPipelineMode" ` 
+    #      -value "Integrated"
+    # 
+    # However, the combination of PowerShell and the IIS module in Windows 
+    # Server 2008 and 2008 R2 requires you to specify the value as an integer,
+    # which is defined by an enum. You have to first load the DLL and 
+    # then you can use the enum. 
+    Add-Type -Path "${env:SystemRoot}\System32\inetsrv\Microsoft.Web.Administration.dll"
+    # If this DLL doesn't exist, you'll need to install the IIS Management Console
+    # feature.
+    $pipelineMode = [Microsoft.Web.Administration.ManagedPipelineMode]::Integrated
+    Set-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode" -value ([int]$pipelineMode)
 }
 
 # Assign application pool to website
