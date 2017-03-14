@@ -26,7 +26,8 @@ if ($pool -eq $null) {
 
     # What version of the .NET runtime to use. Valid options are "v2.0" and 
     # "v4.0". IIS Manager often presents them as ".NET 4.5", but these still 
-    # use the .NET 4.0 runtime so should use "v4.0". 
+    # use the .NET 4.0 runtime so should use "v4.0". For a "No Managed Code" 
+    # equivalent, pass an empty string.
     $pool.ManagedRuntimeVersion = "v4.0"
 
     # If your ASP.NET app must run as a 32-bit process even on 64-bit machines
