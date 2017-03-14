@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using JetBrains.TeamCity.ServiceMessages.Write;
 using JetBrains.TeamCity.ServiceMessages.Write.Special.Impl;
 using JetBrains.TeamCity.ServiceMessages.Write.Special.Impl.Writer;
@@ -63,6 +64,7 @@ namespace ExampleRunner.Testing
 
             public void StdErr(string line)
             {
+                Interlocked.Increment(ref TeamCitySink.Errors);
                 testWriter.WriteErrOutput(line);
             }
 
