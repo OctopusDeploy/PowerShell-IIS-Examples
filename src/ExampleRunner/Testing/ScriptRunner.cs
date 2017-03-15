@@ -65,9 +65,11 @@ namespace ExampleRunner.Testing
 
             public void StdErr(string line)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 failed = true;
                 Interlocked.Increment(ref TeamCitySink.Errors);
                 testWriter.WriteErrOutput(line);
+                Console.ResetColor();
             }
 
             public void Exited(int exit)
