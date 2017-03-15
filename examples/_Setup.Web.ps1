@@ -9,6 +9,8 @@ Import-Module WebAdministration -ErrorAction SilentlyContinue
 mkdir "C:\Sites" -ErrorAction SilentlyContinue
 mkdir "C:\Sites\MySite" -ErrorAction SilentlyContinue
 
+$ErrorActionPreference = "Continue"
+
 # In case previous invocations left one open
 Stop-WebCommitDelay -commit $false -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
 Stop-WebCommitDelay -commit $false -WarningAction SilentlyContinue -ErrorAction SilentlyContinue

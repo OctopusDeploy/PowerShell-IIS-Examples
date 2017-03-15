@@ -7,6 +7,8 @@ Import-Module IISAdministration -ErrorAction SilentlyContinue
 mkdir "C:\Sites" -ErrorAction SilentlyContinue
 mkdir "C:\Sites\MySite" -ErrorAction SilentlyContinue
 
+$ErrorActionPreference = "Continue"
+
 # In case previous invocations left one open
 Stop-IISCommitDelay -commit $false -WarningAction SilentlyContinue
 Stop-IISCommitDelay -commit $false -WarningAction SilentlyContinue

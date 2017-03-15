@@ -6,6 +6,8 @@ cd $here
 
 . ..\_Setup.Web.ps1
 
+Remove-Item -Path "IIS:\AppPools\My Pool" -Recurse -Force -ErrorAction SilentlyContinue
+
 # -----------------------------------------------------------------------------
 # Example
 # -----------------------------------------------------------------------------
