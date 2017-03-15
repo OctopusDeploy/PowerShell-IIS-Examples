@@ -6,10 +6,6 @@ cd $here
 
 . ..\_Setup.Web.ps1
 
-mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
-
-New-Website -Name "Website1" -Port 80 -IPAddress "*" -HostHeader "" -PhysicalPath "C:\Sites\Website1"
-
 # -----------------------------------------------------------------------------
 # Example
 # -----------------------------------------------------------------------------
@@ -88,15 +84,11 @@ if ((Test-Path "IIS:\AppPools\My Pool 3") -eq $False) {
     }
 }
 
-# Assign application pool to website
-Set-ItemProperty -Path "IIS:\Sites\Website1" -name "applicationPool" -value "My Pool 3"
-
 # -----------------------------------------------------------------------------
 # Assert
 # -----------------------------------------------------------------------------
 
 if ((Get-WebAppPoolState -Name "My Pool 3") -eq $null) { Write-Error "Website1 not found" }
-if ((Get-WebSite -Name "Website1") -eq $null) { Write-Error "Website1 not found" }
 if ((Get-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode") -ne "Integrated") { Write-Error "Wrong pipeline mode" }
 
 # -----------------------------------------------------------------------------
@@ -105,5 +97,4 @@ if ((Get-ItemProperty -Path "IIS:\AppPools\My Pool 3" -name "managedPipelineMode
 
 . ..\_Teardown.Web.ps1
 
-Remove-Item -Path "IIS:\Sites\Website1" -Recurse -Force
 Remove-Item -Path "IIS:\AppPools\My Pool 3" -Recurse -Force

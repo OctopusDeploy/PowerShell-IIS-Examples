@@ -18,7 +18,6 @@ New-Website -Name "Website1" -Port 80 -IPAddress "*" -HostHeader "" -PhysicalPat
 Import-Module WebAdministration
 
 New-Item -Type Application -Path "IIS:\Sites\Website1\MyApp" -physicalPath "C:\Sites\MyApp"
-Set-ItemProperty -Path "IIS:\Sites\Website1\MyApp" -name "applicationPool" -value ".NET v2.0"
 
 # -----------------------------------------------------------------------------
 # Assert

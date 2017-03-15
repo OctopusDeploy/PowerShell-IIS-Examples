@@ -6,19 +6,15 @@ cd $here
 
 . ..\_Setup.IIS.ps1
 
-mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
-
-New-IISSite -Name "Website1" -BindingInformation "*:8022:" -PhysicalPath "C:\Sites\Website1"
-
 # -----------------------------------------------------------------------------
 # Example
 # -----------------------------------------------------------------------------
 Import-Module IISAdministration
 
-$pool = Get-IISAppPool -Name "My Pool 3" -WarningAction SilentlyContinue
+$pool = Get-IISAppPool -Name "My Pool" -WarningAction SilentlyContinue
 if ($pool -eq $null) {
     $manager = Get-IISServerManager
-    $pool = $manager.ApplicationPools.Add("My Pool 3")
+    $pool = $manager.ApplicationPools.Add("My Pool")
 
     # Older applications may require "Classic" mode, but most modern ASP.NET
     # apps use the integrated pipeline
@@ -56,14 +52,11 @@ if ($pool -eq $null) {
     $manager.CommitChanges()
 }
 
-$website = Get-IISSite -Name "Website1"
-$website.Applications["/"].ApplicationPoolName = "My Pool 3"
-
 # -----------------------------------------------------------------------------
 # Assert
 # -----------------------------------------------------------------------------
 
-if ((Get-IISAppPool -Name "My Pool 3") -eq $null) { Write-Error "My Pool not found" }
+if ((Get-IISAppPool -Name "My Pool") -eq $null) { Write-Error "My Pool not found" }
 
 # -----------------------------------------------------------------------------
 # Clean up
@@ -71,8 +64,6 @@ if ((Get-IISAppPool -Name "My Pool 3") -eq $null) { Write-Error "My Pool not fou
 
 . ..\_Teardown.IIS.ps1
 
-Remove-IISSite -Name "Website1" -Confirm:$false
-
 $manager = Get-IISServerManager
-$manager.ApplicationPools["My Pool 3"].Delete()
+$manager.ApplicationPools["My Pool"].Delete()
 $manager.CommitChanges()
