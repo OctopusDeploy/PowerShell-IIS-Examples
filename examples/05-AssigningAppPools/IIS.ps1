@@ -47,5 +47,5 @@ if ((Get-IISAppPool -Name "My Pool") -eq $null) { Write-Error "My Pool not found
 Remove-IISSite -Name "Website1" -Confirm:$false
 
 $manager = Get-IISServerManager
-$manager.ApplicationPools["My Pool 3"].Delete()
+$manager.ApplicationPools["My Pool"].Delete()
 $manager.CommitChanges()

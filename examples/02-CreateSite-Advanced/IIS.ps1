@@ -14,16 +14,12 @@ mkdir "C:\Sites\Website1" -ErrorAction SilentlyContinue
 
 Import-Module IISAdministration
 
-Start-IISCommitDelay
-
-New-IISSite -Name "Website1" -BindingInformation "*:8022:" -PhysicalPath "C:\Sites\Website1"
-
-$site = Get-IISSite -Name "Website1"
+$manager = Get-IISServerManager
+$site = $manager.Sites.Add("Website1", "http", "*:8022:", "C:\Sites\Website1")
 $site.Id = 4
 $site.Bindings.Add("*:8023:", "http")
 $site.Bindings.Add("*:8024:", "http")
-
-Stop-IISCommitDelay -Commit $true
+$manager.CommitChanges()
 
 # -----------------------------------------------------------------------------
 # Assert
