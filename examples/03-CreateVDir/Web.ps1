@@ -24,7 +24,6 @@ New-Item -Type Application -Path "IIS:\Sites\Website1\MyApp" -physicalPath "C:\S
 # -----------------------------------------------------------------------------
 
 if ((Test-Path IIS:\Sites\Website1\MyApp) -eq $false) { Write-Error "App not found" }
-if ((Get-ItemProperty -Path "IIS:\Sites\Website1\MyApp" -name "applicationPool") -ne ".NET v2.0") { Write-Error "Wrong app pool" }
 
 # -----------------------------------------------------------------------------
 # Clean up
