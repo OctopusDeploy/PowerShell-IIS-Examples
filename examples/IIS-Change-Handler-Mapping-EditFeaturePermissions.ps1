@@ -11,6 +11,7 @@ $setpolicy = "Read, Script"
 #Sets the Handler Mapping feature delegation to Read/Write
 Set-WebConfiguration //System.webServer/handlers -metadata overrideMode -value Allow -PSPath IIS:/ -verbose
 
+#Sets the AccessPolicy for @site to $setpolicy value.
 Set-WebConfiguration -filter "/system.webServer/handlers/@AccessPolicy" -PSPath $site -value $setpolicy -verbose
 
 #Sets the Handler Mapping feature delegation to Read Only. (Left commented out by default)
