@@ -15,4 +15,4 @@ Set-WebConfiguration //System.webServer/handlers -metadata overrideMode -value A
 Set-WebConfiguration -filter "/system.webServer/handlers/@AccessPolicy" -PSPath $site -value $setpolicy -verbose
 
 #Sets the Handler Mapping feature delegation to Read Only. (Left commented out by default)
-#Set-WebConfiguration //System.webServer/handlers -metadata overrideMode -value Deny -PSPath IIS:/ -verbos
+#Set-WebConfiguration //System.webServer/handlers -metadata overrideMode -value Deny -PSPath IIS:/ -verbose
